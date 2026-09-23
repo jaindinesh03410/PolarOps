@@ -1,0 +1,17 @@
+{
+  "name": "antarctic-station-management",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend-api",
+    "supabase"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd backend-ml && pip install -r requirements.txt",
+    "dev:api": "cd backend-api && npm run dev",
+    "dev:ml": "cd backend-ml && uvicorn main:app --reload --port 8001",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build"
+  }
+}

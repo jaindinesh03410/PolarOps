@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.pytest_cache/
+
+# ML models
+*.pth
+*.onnx
+models/yolov8*.pt
+
+# Reference folders (external projects - do not commit)
+reference_aroha/
+reference_polaris/
+reference_polaris_new/

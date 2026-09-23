@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-ice-white text-polar-dark font-sans antialiased;
+  }
+
+  .dark-theme {
+    @apply bg-polar-dark text-ice-white min-h-screen;
+    background-image:
+      radial-gradient(1200px 500px at 10% -10%, rgba(14, 165, 233, 0.12), transparent),
+      radial-gradient(800px 400px at 90% 0%, rgba(167, 139, 250, 0.08), transparent);
+  }
+
+  .dark-theme h1,
+  .dark-theme h2,
+  .dark-theme h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-polar-blue to-polar-blue-light text-white px-4 py-2 rounded-lg font-medium
+           shadow-elevation-2 hover:shadow-glow hover:scale-[1.02] transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-white/90 border border-white/20 text-polar-dark px-4 py-2 rounded-lg font-medium
+           shadow-elevation-1 hover:shadow-elevation-2 transition-all duration-200;
+  }
+
+  .dark-theme .btn-secondary {
+    @apply bg-white/5 border-white/15 text-ice-white hover:bg-white/10;
+  }
+
+  .card {
+    @apply bg-white/90 rounded-xl shadow-elevation-2 p-6 border border-white/40
+           backdrop-blur-sm transition-shadow duration-300;
+  }
+
+  .dark-theme .card {
+    @apply bg-white/[0.04] border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.35)] text-ice-white
+           hover:shadow-glow;
+  }
+
+  .card-dark {
+    @apply bg-gradient-to-br from-polar-dark-lighter to-polar-dark rounded-xl
+           shadow-elevation-3 p-6 border border-white/10 backdrop-blur-sm;
+  }
+
+  .card-glass {
+    @apply rounded-xl p-6 border border-white/10 shadow-elevation-3 backdrop-blur-xl;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  }
+
+  .badge-critical {
+    @apply bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1.5 rounded-full
+           text-xs font-bold uppercase tracking-wide shadow-lg animate-pulse-slow;
+  }
+
+  .badge-high {
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1.5 rounded-full
+           text-xs font-bold uppercase tracking-wide shadow-elevation-2;
+  }
+
+  .badge-medium {
+    @apply bg-gradient-to-r from-yellow-500 to-amber-500 text-black px-3 py-1.5 rounded-full
+           text-xs font-semibold uppercase tracking-wide shadow-elevation-2;
+  }
+
+  .badge-low {
+    @apply bg-gradient-to-r from-sky-500 to-blue-600 text-white px-3 py-1.5 rounded-full
+           text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .badge-measured {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-2.5 py-1 rounded-md
+           text-[10px] font-semibold uppercase tracking-widest;
+  }
+
+  .badge-simulated {
+    @apply bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white px-2.5 py-1 rounded-md
+           text-[10px] font-semibold uppercase tracking-widest;
+  }
+
+  .badge-manual {
+    @apply bg-gradient-to-r from-slate-500 to-slate-600 text-white px-2.5 py-1 rounded-md
+           text-[10px] font-semibold uppercase tracking-widest;
+  }
+
+  .stat-card {
+    @apply rounded-xl p-5 border border-white/10 shadow-elevation-3
+           transition-all duration-300 hover:-translate-y-0.5;
+    background: linear-gradient(160deg, rgba(20,26,46,0.9), rgba(10,14,26,0.95));
+  }
+
+  .data-number {
+    @apply font-mono text-3xl font-bold text-polar-blue-light;
+  }
+
+  .section-title {
+    @apply font-display text-xl font-bold mb-4 flex items-center gap-3;
+  }
+
+  .field-crew-ui .card {
+    @apply bg-white border-2 border-slate-800 shadow-none text-polar-dark;
+  }
+
+  .field-crew-ui .btn-primary,
+  .field-crew-ui button {
+    @apply min-h-[52px];
+  }
+
+  .leaflet-hazard-pulse {
+    animation: hazardPulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes hazardPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, transparent 0%, rgba(14, 165, 233, 0.12) 50%, transparent 100%);
+  background-size: 1000px 100%;
+}
+
+.leaflet-container {
+  background: #0a0e1a;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { @apply bg-slate-900 rounded; }
+::-webkit-scrollbar-thumb { @apply bg-slate-600 rounded; }
