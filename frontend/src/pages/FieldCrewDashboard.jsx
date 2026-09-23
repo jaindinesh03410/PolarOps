@@ -3,7 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { useOffline } from '../contexts/OfflineContext';
 import { api } from '../lib/api';
-import { AlertTriangle, Heart, Send, CheckCircle } from 'lucide-react';
+import { AlertTriangle, Heart, Send, CheckCircle, Loader2, WifiOff, Signal, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EnvironmentalMonitor } from '../components/EnvironmentalMonitor';
 
 export default function FieldCrewDashboard() {
@@ -149,22 +150,21 @@ export default function FieldCrewDashboard() {
     }
   };
 
-  const slider = 'h-3 w-full accent-black';
 
   return (
-    <div className="space-y-6 text-polar-dark">
+    <div className="space-y-6">
       <div>
         <h1 className="font-heading text-4xl font-bold leading-tight">Field Crew</h1>
-        <p className="mt-1 text-lg font-medium font-mono">{personnel?.stations?.name}</p>
+        <p className="mt-1 font-mono text-lg font-medium text-polar-blue-light">{personnel?.stations?.name}</p>
         {!isOnline && (
-          <div className="mt-3 border-4 border-black bg-amber-300 p-4 text-base font-bold">
+          <div className="mt-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-base font-bold text-amber-200">
             OFFLINE MODE — saved on this device
             {queuedActions.length > 0 && ` (${queuedActions.length} queued)`}
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border-4 border-red-800 bg-red-600 p-5 text-white shadow-lg">
+      <div className="rounded-xl border border-red-500/50 bg-gradient-to-br from-red-600 to-red-700 p-6 text-white shadow-lg">
         <h2 className="mb-3 flex items-center gap-2 text-2xl font-black">
           <AlertTriangle className="h-8 w-8" />
           Emergency SOS
@@ -173,13 +173,13 @@ export default function FieldCrewDashboard() {
           value={sosMessage}
           onChange={(e) => setSOSMessage(e.target.value)}
           placeholder="Describe the emergency…"
-          className="mb-3 w-full rounded-xl border-4 border-black p-4 text-lg text-black"
+          className="mb-3 w-full rounded-xl border border-white/20 bg-polar-dark p-4 text-lg text-ice-white placeholder-slate-400"
           rows={3}
         />
         <button
           onClick={triggerSOS}
           disabled={sending || !sosMessage.trim()}
-          className="flex min-h-[64px] w-full items-center justify-center gap-3 rounded-xl bg-black text-xl font-black text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-all"
+          className="flex min-h-[64px] w-full items-center justify-center gap-3 rounded-xl border border-white/20 bg-polar-dark text-xl font-black text-ice-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-polar-dark-lighter transition-all"
         >
           <Send className="h-6 w-6" />
           {sending ? 'SENDING...' : isOnline ? 'SEND SOS NOW' : 'QUEUE SOS (SYNC LATER)'}
@@ -189,23 +189,23 @@ export default function FieldCrewDashboard() {
         </p>
       </div>
 
-      <div className="rounded-2xl border-4 border-black bg-white p-5">
+      <div className="card">
         <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold">
-          <Heart className="h-7 w-7 text-pink-700" />
+          <Heart className="h-7 w-7 text-rose-400" />
           Daily wellness
         </h2>
         <div className="space-y-5 text-lg">
           <div>
             <label className="mb-2 block font-bold">Mood (1-10): {wellness.mood_score}</label>
-            <input type="range" min="1" max="10" value={wellness.mood_score} onChange={(e) => setWellness({ ...wellness, mood_score: parseInt(e.target.value) })} className={slider} />
+            <input type="range" min="1" max="10" value={wellness.mood_score} onChange={(e) => setWellness({ ...wellness, mood_score: parseInt(e.target.value) })} className="h-3 w-full accent-polar-blue-light" />
           </div>
           <div>
             <label className="mb-2 block font-bold">Fatigue (1-10): {wellness.fatigue_level}</label>
-            <input type="range" min="1" max="10" value={wellness.fatigue_level} onChange={(e) => setWellness({ ...wellness, fatigue_level: parseInt(e.target.value) })} className={slider} />
+            <input type="range" min="1" max="10" value={wellness.fatigue_level} onChange={(e) => setWellness({ ...wellness, fatigue_level: parseInt(e.target.value) })} className="h-3 w-full accent-polar-blue-light" />
           </div>
           <div>
             <label className="mb-2 block font-bold">Stress (1-10): {wellness.stress_level}</label>
-            <input type="range" min="1" max="10" value={wellness.stress_level} onChange={(e) => setWellness({ ...wellness, stress_level: parseInt(e.target.value) })} className={slider} />
+            <input type="range" min="1" max="10" value={wellness.stress_level} onChange={(e) => setWellness({ ...wellness, stress_level: parseInt(e.target.value) })} className="h-3 w-full accent-polar-blue-light" />
           </div>
           <div>
             <label className="mb-2 block font-bold">Sleep hours</label>
@@ -214,23 +214,23 @@ export default function FieldCrewDashboard() {
               step="0.5"
               value={wellness.sleep_hours}
               onChange={(e) => setWellness({ ...wellness, sleep_hours: parseFloat(e.target.value) })}
-              className="min-h-[52px] w-full rounded-xl border-4 border-black p-3 text-lg"
+              className="min-h-[52px] w-full rounded-xl border border-white/20 bg-black/40 p-3 text-lg text-ice-white"
             />
           </div>
-          <button onClick={submitWellness} className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-polar-blue text-lg font-bold text-white">
+          <button onClick={submitWellness} className="btn-primary flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl text-lg font-bold">
             <CheckCircle className="h-6 w-6" />
             Submit check-in
           </button>
         </div>
       </div>
 
-      <div className="rounded-2xl border-4 border-black bg-white p-5">
+      <div className="card">
         <h3 className="mb-3 text-xl font-bold">Your recent check-ins</h3>
         <div className="space-y-3">
           {myWellness.slice(0, 5).map(w => (
-            <div key={w.id} className="border-l-8 border-polar-blue pl-3 text-base">
+            <div key={w.id} className="border-l-4 border-polar-blue-light pl-3 text-base">
               <div className="font-bold">{new Date(w.checkin_date).toLocaleDateString()}</div>
-              <div>Mood {w.mood_score}/10 · Fatigue {w.fatigue_level}/10 · Stress {w.stress_level}/10</div>
+              <div className="text-slate-300">Mood {w.mood_score}/10 · Fatigue {w.fatigue_level}/10 · Stress {w.stress_level}/10</div>
             </div>
           ))}
         </div>
@@ -239,16 +239,16 @@ export default function FieldCrewDashboard() {
       {/* Environmental Monitoring */}
       <EnvironmentalMonitor location="Field Operations" />
 
-      <div className="rounded-2xl border-4 border-black bg-white p-5">
+      <div className="card">
         <h3 className="mb-3 text-xl font-bold">Station inventory</h3>
         <div className="space-y-3">
           {inventory.slice(0, 5).map(item => (
-            <div key={item.id} className="flex items-center justify-between border-b-2 border-black/20 pb-2 text-lg">
+            <div key={item.id} className="flex items-center justify-between border-b border-white/10 pb-2 text-lg">
               <div>
                 <div className="font-bold">{item.item_name}</div>
-                <div className="text-base">{item.category}</div>
+                <div className="text-base text-slate-400">{item.category}</div>
               </div>
-              <div className={`font-mono text-xl font-black ${item.current_quantity <= item.minimum_threshold ? 'text-red-700' : 'text-emerald-800'}`}>
+              <div className={`font-mono text-xl font-black ${item.current_quantity <= item.minimum_threshold ? 'text-rose-400' : 'text-emerald-400'}`}>
                 {item.current_quantity} {item.unit}
               </div>
             </div>

@@ -7,7 +7,7 @@ import SearchBar from './SearchBar';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '../lib/api';
 
-const DARK_ROLES = new Set(['HQ_ADMIN', 'STATION_COMMANDER', 'LOGISTICS_OFFICER', 'MEDICAL_OFFICER']);
+const DARK_ROLES = new Set(['HQ_ADMIN', 'STATION_COMMANDER', 'LOGISTICS_OFFICER', 'MEDICAL_OFFICER', 'FIELD_CREW']);
 const POLL_INTERVAL_MS = 30_000; // 30 s
 
 /** Map alert severity → NotificationDropdown type prop */

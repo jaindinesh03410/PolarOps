@@ -3,7 +3,6 @@ import { useToast } from '../contexts/ToastContext';
 import { api } from '../lib/api';
 import DataProvenanceBadge from '../components/DataProvenanceBadge';
 import StatusBadge from '../components/StatusBadge';
-import MapEmbed from '../components/MapEmbed';
 import ExportButton from '../components/ExportButton';
 import ActionButton from '../components/ActionButton';
 import EnterpriseKPI from '../components/EnterpriseKPI';
@@ -14,6 +13,7 @@ import { motion } from 'framer-motion';
 import { chartTheme, ChartTooltipBox } from '../lib/chartTheme';
 import { EnvironmentalMonitor } from '../components/EnvironmentalMonitor';
 import { ResourceTracker } from '../components/ResourceTracker';
+import AntarcticRoutePlanner from '../components/AntarcticRoutePlanner';
 
 export default function LogisticsOfficerDashboard() {
   const toast = useToast();
@@ -23,12 +23,6 @@ export default function LogisticsOfficerDashboard() {
   const [stations, setStations] = useState([]);
   const [selectedManifest, setSelectedManifest] = useState(null);
   const [optimization, setOptimization] = useState(null);
-  const [routeRequest, setRouteRequest] = useState({
-    startStation: 'a0000000-0000-0000-0000-000000000001',
-    endStation: 'a0000000-0000-0000-0000-000000000002',
-    start: { lat: -70.7666, lng: 11.7333 },
-    end: { lat: -69.4083, lng: 76.1833 }
-  });
   const [computing, setComputing] = useState(false);
 
   useEffect(() => {
@@ -139,64 +133,9 @@ export default function LogisticsOfficerDashboard() {
     }
   };
 
-  const handleStationChange = (type, stationId) => {
-    const station = stations.find(s => s.id === stationId);
-    if (!station) return;
-    
-    setRouteRequest(prev => ({
-      ...prev,
-      [type === 'start' ? 'startStation' : 'endStation']: stationId,
-      [type]: { lat: station.latitude, lng: station.longitude }
-    }));
-  };
+  const handleStationChange = (_type, _stationId) => {};   // handled by AntarcticRoutePlanner
 
-  const computeRoute = async () => {
-    try {
-      setComputing(true);
-      console.log('🗺️ Computing route from', routeRequest.start, 'to', routeRequest.end);
-      
-      const result = await api.computeRoute({
-        start: routeRequest.start,
-        end: routeRequest.end,
-        name: 'Computed Route',
-        avoidHazards: true
-      });
-      
-      console.log('✅ Route computed:', result);
-      setRoutes([result, ...routes]);
-      toast.success('Safe route computed successfully!');
-    } catch (error) {
-      console.error('❌ Route computation error:', error);
-      
-      // Fallback: Create mock route if ML service is down
-      const mockRoute = {
-        id: `mock-${Date.now()}`,
-        name: 'Computed Route (Mock)',
-        start_latitude: routeRequest.start.lat,
-        start_longitude: routeRequest.start.lng,
-        end_latitude: routeRequest.end.lat,
-        end_longitude: routeRequest.end.lng,
-        total_distance_km: Math.abs(routeRequest.end.lat - routeRequest.start.lat) * 111 + 
-                          Math.abs(routeRequest.end.lng - routeRequest.start.lng) * 85,
-        estimated_time_hours: 12,
-        path_geojson: {
-          type: 'LineString',
-          coordinates: [
-            [routeRequest.start.lng, routeRequest.start.lat],
-            [routeRequest.end.lng, routeRequest.end.lat]
-          ]
-        },
-        confidence_score: 85,
-        explanation: 'Direct route calculated (ML service unavailable). This is a simplified route.',
-        data_source: 'SIMULATED'
-      };
-      
-      setRoutes([mockRoute, ...routes]);
-      toast.warning('ML service unavailable. Showing direct route.');
-    } finally {
-      setComputing(false);
-    }
-  };
+  const computeRoute = async () => {};                      // handled by AntarcticRoutePlanner
 
   const utilData = optimization
     ? [
@@ -254,87 +193,24 @@ export default function LogisticsOfficerDashboard() {
         <EnvironmentalMonitor location="Logistics Center" />
       </div>
 
-      <div className="card p-0 overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-6 py-4">
-          <h2 className="section-title mb-0 font-heading">
-            <Route className="h-5 w-5 text-polar-blue-light" />
-            A* Route Planner
-          </h2>
-          <ActionButton
-            onClick={computeRoute}
-            variant="primary"
-            disabled={computing}
-            successMessage="Route Computed"
-            loadingMessage="Computing..."
-          >
-            Compute Safe Route
-          </ActionButton>
-        </div>
-        
-        {/* Station Selectors */}
-        <div className="grid gap-4 px-6 py-4 md:grid-cols-2 border-b border-white/10">
-          <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">
-              From Station
-            </label>
-            <select
-              value={routeRequest.startStation}
-              onChange={(e) => handleStationChange('start', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border border-white/15 bg-black/30 text-ice-white focus:ring-2 focus:ring-polar-blue focus:border-transparent transition-all"
-            >
-              {stations.map(station => (
-                <option key={station.id} value={station.id}>
-                  {station.name} ({station.code})
-                </option>
-              ))}
-            </select>
-            <div className="mt-1 font-mono text-xs text-slate-500">
-              {routeRequest.start.lat.toFixed(4)}, {routeRequest.start.lng.toFixed(4)}
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">
-              To Station
-            </label>
-            <select
-              value={routeRequest.endStation}
-              onChange={(e) => handleStationChange('end', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border border-white/15 bg-black/30 text-ice-white focus:ring-2 focus:ring-polar-blue focus:border-transparent transition-all"
-            >
-              {stations.map(station => (
-                <option key={station.id} value={station.id}>
-                  {station.name} ({station.code})
-                </option>
-              ))}
-            </select>
-            <div className="mt-1 font-mono text-xs text-slate-500">
-              {routeRequest.end.lat.toFixed(4)}, {routeRequest.end.lng.toFixed(4)}
-            </div>
-          </div>
-        </div>
-        
-        <div className="h-96">
-          <MapEmbed
-            stations={stations}
-            hazards={hazards}
-            routes={routes}
-            centerLat={-70}
-            centerLng={40}
-            zoom={4}
-            className="h-full"
-          />
-        </div>
-        {routes[0] && (
-          <div className="m-4 rounded-xl border border-sky-500/30 bg-sky-500/10 p-4">
-            <div className="font-semibold">Latest route: <span className="font-mono">{routes[0].total_distance_km} km</span> · <span className="font-mono">{routes[0].estimated_time_hours} h</span></div>
-            <div className="mt-1 text-sm text-slate-300">{routes[0].explanation}</div>
-            <div className="mt-2">
-              <DataProvenanceBadge dataSource="SIMULATED" confidence={routes[0].confidence_score} explanation={routes[0].explanation} />
-            </div>
-          </div>
-        )}
-      </div>
+      {/* A* Route Planner — full interactive map */}
+      <AntarcticRoutePlanner
+        stations={stations}
+        hazards={hazards}
+        onRouteComputed={async ({ start, end }) => {
+          try {
+            const result = await api.computeRoute({
+              start, end, name: 'Computed Route', avoidHazards: true,
+            });
+            setRoutes(prev => [result, ...prev]);
+            toast.success('Safe route computed!');
+            return result;
+          } catch {
+            toast.warning('ML service unavailable — showing client-side A* route.');
+            return null;
+          }
+        }}
+      />
 
       {/* Cargo Timeline */}
       <div className="card">

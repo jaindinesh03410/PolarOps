@@ -324,7 +324,7 @@ export function EnvironmentalMonitor({ location = 'Research Base' }) {
           </div>
 
           <div>
-            <h3 className="font-display text-xl font-bold tracking-tight text-polar-dark">
+            <h3 className="font-display text-xl font-bold tracking-tight text-white">
               Environmental Instruments
             </h3>
             <p className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.2em] text-sky-400">
